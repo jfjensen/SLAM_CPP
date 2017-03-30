@@ -25,6 +25,9 @@ Robot::Robot(float ticks_to_mm, float robot_width, float scanner_displacement)
 	ticks_to_mm_ = ticks_to_mm;
 	robot_width_ = robot_width;
 	scanner_displacement_ = scanner_displacement;
+
+	min_dist_ = 20.0;
+	depth_jump_ = 100.0;
 }
 
 Robot::~Robot()
@@ -242,6 +245,68 @@ void Robot::read(string file_name)
 	            break;
 	        }
 
+	        // L is landmark. This is actually background information, independent
+          	// of time.
+          	// File format: L <type> info...
+          	// Supported types:
+          	// Cylinder: L C x y diameter.
+          	case 'L':
+	        {
+	            if (first_landmarks)
+	            {
+	                landmarks_.clear();
+	                first_landmarks = false;
+	            }
+	                      
+	    		char type;
+	    		iss >> type;
+
+	    		if (type=='C')
+	    		{
+					VectorXd landmark;
+					float px, py, diameter;
+					iss >> px;
+					iss >> py;
+					iss >> diameter;
+					landmark << px, py, diameter;
+
+					landmarks_.push_back(landmark);
+
+	    		}
+	            //cout << "Pole Indices size: " << pole_indices_.size() << endl;
+	            break;
+	        }
+
+	        // D is detected landmarks (in each scan).
+         	// File format: D <type> info...
+         	// Supported types:
+         	// Cylinder: D C x y x y ...
+         	case 'D':
+         	{
+         		char type;
+         		iss >> type;
+
+         		if (type == 'C')
+         		{
+         			if (first_detected_cylinders)
+         			{
+         				detected_cylinders_.clear();
+         				first_detected_cylinders = false;
+         			}
+
+         			float px, py;
+
+	            	while(iss >> px and iss >> py)
+				    {
+				        //cout << term << " ";
+				        VectorXd position = VectorXd(2);
+				        position << px, py;
+				        detected_cylinders_.push_back(position);
+				    }
+
+         		}
+         	}
+
 		}
 
 	}
@@ -253,6 +318,93 @@ void Robot::read(string file_name)
 
 
 
+}
+
+void Robot::compute_derivative(const vector<int> & scan, vector<float> & jumps)
+{
+	jumps.push_back(0.0);
+
+	for (int i = 1; i < scan.size()-1; i++)
+	{
+		int l = scan.at(i-1);
+		int r = scan.at(i+1);
+
+		if (l > min_dist_ and r > min_dist_)
+		{
+			float deriv = (float)(r-l)/2.0;
+			jumps.push_back(deriv);
+
+		}
+		else
+		{
+			jumps.push_back(0.0);
+		}
+	}
+
+	jumps.push_back(0.0);
+		cout << "hello" << endl;
+
+}
+
+void Robot::find_cylinders(const vector<int> & scan, const vector<float> & scan_deriv, vector<VectorXd> & cylinder_list)
+{
+	bool on_cylinder = false;
+	string direction = "Left";
+	float sum_ray = 0.0;
+	float sum_depth = 0.0;
+	int rays = 0;
+	bool discard = false;
+
+	for (int i = 0; i < scan_deriv.size(); i++)
+	{
+		float current_der = scan_deriv.at(i);
+		if (fabs(current_der) > depth_jump_)
+		{
+			if ((on_cylinder) and (direction == "Left"))
+			{
+				if (current_der < 0.0)
+				{
+					discard = true;
+				}
+				else
+				{
+					on_cylinder = false;
+					float average_ray   = sum_ray / rays;
+					float average_depth = sum_depth / rays;
+
+					VectorXd position = VectorXd(2);
+					position << average_ray, average_depth;
+
+					cylinder_list.push_back(position);
+					sum_ray = 0.0;
+					sum_depth = 0.0;
+					rays = 0;
+				}
+			}
+			if ((not on_cylinder) and (current_der < 0.0))
+			{
+				on_cylinder = true;
+				direction = "Left";
+			}
+		}
+		if (scan.at(i) <= min_dist_)
+		{
+			discard = true;
+		}
+		if ((on_cylinder) and (scan.at(i) > min_dist_))
+		{
+			rays++;
+			sum_ray += i;
+			sum_depth += scan.at(i);
+		}
+		if (discard)
+		{
+			sum_ray = 0.0;
+			sum_depth = 0.0;
+			rays = 0;
+			discard = false;
+		}
+	}
 }
 
 int Robot::size()
@@ -267,6 +419,9 @@ void Robot::info()
 	cout << "Scan data size: " << scan_data_.size() << endl;
 	cout << "Pole indices size: " << pole_indices_.size() << endl;
 	cout << "Motor ticks size: " << motor_ticks_.size() << endl;
+	cout << "Filtered trajectory size: " << filtered_positions_.size() << endl;
+	cout << "Landmark size: " << landmarks_.size() << endl;
+	cout << "Detected landmarks: " << detected_cylinders_.size() << endl;
 
 	return;
 }

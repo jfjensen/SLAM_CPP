@@ -18,6 +18,8 @@ public:
 	Robot(float ticks_to_mm, float robot_width, float scanner_displacement);
 	~Robot();
 	void filter_step_scanner(VectorXd &pose, VectorXd motor_ticks);
+	void compute_derivative(const vector<int> & scan, vector<float> & jumps);
+	void find_cylinders(const vector<int> & scan, const vector<float> & scan_deriv, vector<VectorXd> & cylinder_list);
 	void read(string filename);
 	int size();
 	void info();
@@ -39,6 +41,8 @@ private:
 	float ticks_to_mm_;
 	float robot_width_;
 	float scanner_displacement_;
+	float min_dist_;
+	float depth_jump_;
 };
 
 
