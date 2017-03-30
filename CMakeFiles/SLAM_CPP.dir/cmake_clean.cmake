@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o"
+  "CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o"
+  "CMakeFiles/SLAM_CPP.dir/robot.cpp.o"
   "SLAM_CPP.pdb"
   "SLAM_CPP.exe"
   "libSLAM_CPP.dll.a"

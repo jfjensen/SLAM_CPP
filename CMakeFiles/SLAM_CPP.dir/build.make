@@ -57,41 +57,67 @@ include CMakeFiles/SLAM_CPP.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/SLAM_CPP.dir/flags.make
 
-CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o: CMakeFiles/SLAM_CPP.dir/flags.make
-CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o: slam_01.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/JFJ/SLAM_CPP/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o"
-	/usr/bin/c++.exe   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o -c /home/JFJ/SLAM_CPP/slam_01.cpp
+CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o: CMakeFiles/SLAM_CPP.dir/flags.make
+CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o: slam_02.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/JFJ/SLAM_CPP/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o"
+	/usr/bin/c++.exe   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o -c /home/JFJ/SLAM_CPP/slam_02.cpp
 
-CMakeFiles/SLAM_CPP.dir/slam_01.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SLAM_CPP.dir/slam_01.cpp.i"
-	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/JFJ/SLAM_CPP/slam_01.cpp > CMakeFiles/SLAM_CPP.dir/slam_01.cpp.i
+CMakeFiles/SLAM_CPP.dir/slam_02.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SLAM_CPP.dir/slam_02.cpp.i"
+	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/JFJ/SLAM_CPP/slam_02.cpp > CMakeFiles/SLAM_CPP.dir/slam_02.cpp.i
 
-CMakeFiles/SLAM_CPP.dir/slam_01.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SLAM_CPP.dir/slam_01.cpp.s"
-	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/JFJ/SLAM_CPP/slam_01.cpp -o CMakeFiles/SLAM_CPP.dir/slam_01.cpp.s
+CMakeFiles/SLAM_CPP.dir/slam_02.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SLAM_CPP.dir/slam_02.cpp.s"
+	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/JFJ/SLAM_CPP/slam_02.cpp -o CMakeFiles/SLAM_CPP.dir/slam_02.cpp.s
 
-CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o.requires:
+CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o.requires:
 
-.PHONY : CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o.requires
+.PHONY : CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o.requires
 
-CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o.provides: CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o.requires
-	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o.provides.build
-.PHONY : CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o.provides
+CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o.provides: CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o.requires
+	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o.provides.build
+.PHONY : CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o.provides
 
-CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o.provides.build: CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o
+CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o.provides.build: CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o
+
+
+CMakeFiles/SLAM_CPP.dir/robot.cpp.o: CMakeFiles/SLAM_CPP.dir/flags.make
+CMakeFiles/SLAM_CPP.dir/robot.cpp.o: robot.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/JFJ/SLAM_CPP/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/SLAM_CPP.dir/robot.cpp.o"
+	/usr/bin/c++.exe   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SLAM_CPP.dir/robot.cpp.o -c /home/JFJ/SLAM_CPP/robot.cpp
+
+CMakeFiles/SLAM_CPP.dir/robot.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SLAM_CPP.dir/robot.cpp.i"
+	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/JFJ/SLAM_CPP/robot.cpp > CMakeFiles/SLAM_CPP.dir/robot.cpp.i
+
+CMakeFiles/SLAM_CPP.dir/robot.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SLAM_CPP.dir/robot.cpp.s"
+	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/JFJ/SLAM_CPP/robot.cpp -o CMakeFiles/SLAM_CPP.dir/robot.cpp.s
+
+CMakeFiles/SLAM_CPP.dir/robot.cpp.o.requires:
+
+.PHONY : CMakeFiles/SLAM_CPP.dir/robot.cpp.o.requires
+
+CMakeFiles/SLAM_CPP.dir/robot.cpp.o.provides: CMakeFiles/SLAM_CPP.dir/robot.cpp.o.requires
+	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/robot.cpp.o.provides.build
+.PHONY : CMakeFiles/SLAM_CPP.dir/robot.cpp.o.provides
+
+CMakeFiles/SLAM_CPP.dir/robot.cpp.o.provides.build: CMakeFiles/SLAM_CPP.dir/robot.cpp.o
 
 
 # Object files for target SLAM_CPP
 SLAM_CPP_OBJECTS = \
-"CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o"
+"CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o" \
+"CMakeFiles/SLAM_CPP.dir/robot.cpp.o"
 
 # External object files for target SLAM_CPP
 SLAM_CPP_EXTERNAL_OBJECTS =
 
-SLAM_CPP.exe: CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o
+SLAM_CPP.exe: CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o
+SLAM_CPP.exe: CMakeFiles/SLAM_CPP.dir/robot.cpp.o
 SLAM_CPP.exe: CMakeFiles/SLAM_CPP.dir/build.make
 SLAM_CPP.exe: CMakeFiles/SLAM_CPP.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/JFJ/SLAM_CPP/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable SLAM_CPP.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/JFJ/SLAM_CPP/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable SLAM_CPP.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SLAM_CPP.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -99,7 +125,8 @@ CMakeFiles/SLAM_CPP.dir/build: SLAM_CPP.exe
 
 .PHONY : CMakeFiles/SLAM_CPP.dir/build
 
-CMakeFiles/SLAM_CPP.dir/requires: CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o.requires
+CMakeFiles/SLAM_CPP.dir/requires: CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o.requires
+CMakeFiles/SLAM_CPP.dir/requires: CMakeFiles/SLAM_CPP.dir/robot.cpp.o.requires
 
 .PHONY : CMakeFiles/SLAM_CPP.dir/requires
 

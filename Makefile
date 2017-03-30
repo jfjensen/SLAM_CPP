@@ -123,32 +123,59 @@ SLAM_CPP/fast:
 	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/build
 .PHONY : SLAM_CPP/fast
 
-slam_01.o: slam_01.cpp.o
+robot.o: robot.cpp.o
 
-.PHONY : slam_01.o
+.PHONY : robot.o
 
 # target to build an object file
-slam_01.cpp.o:
-	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/slam_01.cpp.o
-.PHONY : slam_01.cpp.o
+robot.cpp.o:
+	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/robot.cpp.o
+.PHONY : robot.cpp.o
 
-slam_01.i: slam_01.cpp.i
+robot.i: robot.cpp.i
 
-.PHONY : slam_01.i
+.PHONY : robot.i
 
 # target to preprocess a source file
-slam_01.cpp.i:
-	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/slam_01.cpp.i
-.PHONY : slam_01.cpp.i
+robot.cpp.i:
+	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/robot.cpp.i
+.PHONY : robot.cpp.i
 
-slam_01.s: slam_01.cpp.s
+robot.s: robot.cpp.s
 
-.PHONY : slam_01.s
+.PHONY : robot.s
 
 # target to generate assembly for a file
-slam_01.cpp.s:
-	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/slam_01.cpp.s
-.PHONY : slam_01.cpp.s
+robot.cpp.s:
+	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/robot.cpp.s
+.PHONY : robot.cpp.s
+
+slam_02.o: slam_02.cpp.o
+
+.PHONY : slam_02.o
+
+# target to build an object file
+slam_02.cpp.o:
+	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/slam_02.cpp.o
+.PHONY : slam_02.cpp.o
+
+slam_02.i: slam_02.cpp.i
+
+.PHONY : slam_02.i
+
+# target to preprocess a source file
+slam_02.cpp.i:
+	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/slam_02.cpp.i
+.PHONY : slam_02.cpp.i
+
+slam_02.s: slam_02.cpp.s
+
+.PHONY : slam_02.s
+
+# target to generate assembly for a file
+slam_02.cpp.s:
+	$(MAKE) -f CMakeFiles/SLAM_CPP.dir/build.make CMakeFiles/SLAM_CPP.dir/slam_02.cpp.s
+.PHONY : slam_02.cpp.s
 
 # Help Target
 help:
@@ -159,9 +186,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... SLAM_CPP"
-	@echo "... slam_01.o"
-	@echo "... slam_01.i"
-	@echo "... slam_01.s"
+	@echo "... robot.o"
+	@echo "... robot.i"
+	@echo "... robot.s"
+	@echo "... slam_02.o"
+	@echo "... slam_02.i"
+	@echo "... slam_02.s"
 .PHONY : help
 
 

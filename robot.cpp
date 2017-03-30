@@ -1,0 +1,323 @@
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <stdlib.h>
+#include <vector>
+#include "Eigen/Dense"
+#include "robot.h"
+
+using namespace std;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
+Robot::Robot(float ticks_to_mm, float robot_width, float scanner_displacement)
+{
+	cout << "Creating robot instance..." << endl;
+	reference_positions_.clear();
+	scan_data_.clear();
+	pole_indices_.clear();
+	motor_ticks_.clear();
+	filtered_positions_.clear();
+	landmarks_.clear();
+	detected_cylinders_.clear();
+	last_ticks_.clear();
+
+	ticks_to_mm_ = ticks_to_mm;
+	robot_width_ = robot_width;
+	scanner_displacement_ = scanner_displacement;
+}
+
+Robot::~Robot()
+{
+	cout << "Destroying robot instance..." << endl;
+}
+
+void Robot::read(string file_name)
+{
+
+	cout << "Reading the input file..." << endl;
+
+	ifstream in_file(file_name.c_str(), ifstream::in);
+
+	string line;
+
+	vector<VectorXd> all_ticks;
+
+	bool first_reference_positions = true;
+    bool first_scan_data = true;
+    bool first_pole_indices = true;
+    bool first_motor_ticks = true;
+    bool first_filtered_positions = true;
+    bool first_landmarks = true;
+    bool first_detected_cylinders = true;
+
+    VectorXd prev_ticks;
+
+	while (getline(in_file, line)) {
+		istringstream iss(line);
+		char datatype;
+		iss >> datatype;
+		//cout << "Datatype: " << datatype << endl;
+
+		switch(datatype)
+		{
+			// P is the reference position.
+	        // File format: P timestamp[in ms] x[in mm] y[in mm]
+	        case 'P':
+	        {
+	            if (first_reference_positions)
+	            {
+	                reference_positions_.clear();
+	                first_reference_positions = false;
+	            }
+
+	            int timestamp;
+	            iss >> timestamp;
+	            
+	            VectorXd position = VectorXd(2);
+	            float px, py;
+	            iss >> px;
+	            iss >> py;
+	            position << px, py;
+	            reference_positions_.push_back(position);
+	            //cout << "Reference Positions size: " << reference_positions_.size() << endl;
+	            break;
+	        }
+
+	        // S is the scan data.
+	        // File format:
+	        // S timestamp[in ms] distances[in mm] ...
+	        // Or, in previous versions (set s_record_has_count to True):
+	        // S timestamp[in ms] count distances[in mm] ...
+	        case 'S':
+	        {
+	            if (first_scan_data)
+	            {
+	            	scan_data_.clear();
+	                first_scan_data = false;
+	            }
+
+	            vector<int> data;
+	            if (s_record_has_count_)
+	            {
+	            	
+	            	int timestamp, count;
+	            	iss >> timestamp;
+	            	iss >> count;
+	            	//cout << "Time: " << timestamp << " count: " << count << endl;
+
+	            	int term;
+	            	
+	            	while(iss >> term)
+				    {
+				        //cout << term << " ";
+				        data.push_back(term);
+				    }
+	            	
+	            }
+	            else
+	            {
+	            	int timestamp;
+	            	iss >> timestamp;
+	            	//cout << "Time: " << timestamp << endl;
+
+	            	int term;
+	            	
+	            	while(iss >> term)
+				    {
+				        //cout << term << " ";
+				        data.push_back(term);
+				    }
+	                
+	            }
+	            scan_data_.push_back(data);
+	            //cout << endl;
+	            //cout << "Scan data size: " << scan_data_.size() << endl;
+	            break;
+	        }
+
+	        // I is indices of poles in the scan.
+			// The indices are given in scan order (counterclockwise).
+			// -1 means that the pole could not be clearly detected.
+			// File format: I timestamp[in ms] index ...
+	        case 'I':
+	        {
+	            if (first_pole_indices)
+	            {
+	                pole_indices_.clear();
+	                first_pole_indices = false;
+	            }
+
+	            int timestamp;
+	            iss >> timestamp;
+	            
+	    		vector<int> indices;
+
+	            int term;
+	            	
+            	while(iss >> term)
+			    {
+			        //cout << term << " ";
+			        indices.push_back(term);
+			    }
+
+	            pole_indices_.push_back(indices);
+	            //cout << "Pole Indices size: " << pole_indices_.size() << endl;
+	            break;
+	        }
+
+	        // M is the motor data.
+         	// File format: M timestamp[in ms] pos[in ticks] tachoCount[in ticks] acceleration[deg/s^2] rotationSpeed[deg/s] ...
+         	// (4 values each for: left motor, right motor, and third motor (not used)).
+         	// Note that the file contains absolute ticks, but motor_ticks contains the increments (differences).
+
+	        case 'M':
+	        {
+	            if (first_motor_ticks)
+	            {
+	                motor_ticks_.clear();
+	                first_motor_ticks = false;
+	                prev_ticks = VectorXd(2);
+
+	                int timestamp; // in ms
+		            iss >> timestamp;
+		            
+					int pos_left; // in ticks
+					int val1,val2,val3;
+					int pos_right; // in ticks
+					iss >> pos_left;
+					iss >> val1;
+					iss >> val2;
+					iss >> val3;
+					iss >> pos_right;
+
+					prev_ticks << pos_left, pos_right;
+					break;
+	            }
+
+	            int timestamp; // in ms
+	            iss >> timestamp;
+	            
+				int pos_left; // in ticks
+				int val1,val2,val3;
+				int pos_right; // in ticks
+				iss >> pos_left;
+				iss >> val1;
+				iss >> val2;
+				iss >> val3;
+				iss >> pos_right;
+				//cout << "Left pos: " << pos_left << " Right pos: " << pos_right << endl;
+				VectorXd current_ticks = VectorXd(2);
+				current_ticks << pos_left, pos_right;
+				VectorXd tick_diffs = VectorXd(2);
+				tick_diffs = current_ticks - prev_ticks;				
+				prev_ticks = current_ticks;
+				//cout << "Left pos: " << tick_diffs(0) << " Right pos: " << tick_diffs(1) << endl;
+				motor_ticks_.push_back(tick_diffs);
+	    		
+	            //cout << "Motor ticks size: " << motor_ticks_.size() << endl;
+	            break;
+	        }
+
+	        // F is filtered trajectory. No time stamp is used.
+            // File format: F x[in mm] y[in mm] heading[in radians]
+			case 'F':
+	        {
+	            if (first_filtered_positions)
+	            {
+	                filtered_positions_.clear();
+	                first_filtered_positions = false;
+	            }
+
+	                      
+	    		VectorXd position;
+	    		float px, py, heading;
+	    		iss >> px;
+	    		iss >> py;
+	    		iss >> heading;
+	    		position << px, py, heading;
+	            
+	            filtered_positions_.push_back(position);
+	            //cout << "Pole Indices size: " << pole_indices_.size() << endl;
+	            break;
+	        }
+
+		}
+
+	}
+
+	if (in_file.is_open())
+	{
+    	in_file.close();
+  	}
+
+
+
+}
+
+int Robot::size()
+{
+	int i = 0;
+	return i;
+}
+
+void Robot::info()
+{
+	cout << "Reference positions size: " << reference_positions_.size() << endl;
+	cout << "Scan data size: " << scan_data_.size() << endl;
+	cout << "Pole indices size: " << pole_indices_.size() << endl;
+	cout << "Motor ticks size: " << motor_ticks_.size() << endl;
+
+	return;
+}
+
+void Robot::filter_step_scanner(VectorXd &pose, VectorXd motor_ticks)
+{
+	
+	VectorXd new_pose = VectorXd(3);
+
+	// cout << "motorticks: " << motor_ticks << endl;
+
+	if (motor_ticks(0) == motor_ticks(1))
+	{
+		float old_theta = pose(2);
+		float tot_mms = motor_ticks(0) * ticks_to_mm_;
+
+		float old_x = pose(0) - (scanner_displacement_ * cos(old_theta));
+		float old_y = pose(1) - (scanner_displacement_ * sin(old_theta));
+
+		float x = old_x + (tot_mms * cos(old_theta)) + (scanner_displacement_ * cos(old_theta));
+		float y = old_y + (tot_mms * sin(old_theta)) + (scanner_displacement_ * sin(old_theta));
+		float theta = old_theta;
+		
+		new_pose << x, y, theta;
+	}
+	else
+	{
+
+		float old_theta = pose(2);
+
+		float old_x = pose(0) - (scanner_displacement_ * cos(old_theta));
+		float old_y = pose(1) - (scanner_displacement_ * sin(old_theta));
+
+		float l = motor_ticks(0) * ticks_to_mm_;
+		float r = motor_ticks(1) * ticks_to_mm_;
+
+		float alpha = (r - l) / robot_width_;
+		float R = l / alpha;
+
+		float cx = old_x - ((R + (robot_width_/2)) *  sin(old_theta));
+		float cy = old_y - ((R + (robot_width_/2)) * -cos(old_theta));
+
+		float theta = remainder((old_theta + alpha), (2 * M_PI));
+		//cout << "theta: " << theta << endl;
+
+		float x = cx + ((R + (robot_width_/2)) *  sin(theta)) + (scanner_displacement_ * cos(old_theta));
+		float y = cy + ((R + (robot_width_/2)) * -cos(theta)) + (scanner_displacement_ * sin(old_theta));
+
+		new_pose << x, y, theta;
+	}
+
+
+	pose = new_pose;
+}
