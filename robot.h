@@ -20,6 +20,8 @@ public:
 	void filter_step_scanner(VectorXd &pose, VectorXd motor_ticks);
 	void compute_derivative(const vector<int> & scan, vector<float> & jumps);
 	void find_cylinders(const vector<int> & scan, const vector<float> & scan_deriv, vector<VectorXd> & cylinder_list);
+	void compute_cartesian(const vector<VectorXd> & cylinders, vector<VectorXd> & result);
+	float beam_index_to_angle(int ray_ix);
 	void read(string filename);
 	int size();
 	void info();
@@ -43,6 +45,8 @@ private:
 	float scanner_displacement_;
 	float min_dist_;
 	float depth_jump_;
+	float cylinder_offset_;
+	float mounting_angle_;
 };
 
 

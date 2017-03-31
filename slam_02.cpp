@@ -23,8 +23,8 @@ int main(int argc, char const *argv[])
 	string out_file_name = "pose.txt";
 	ofstream out_file(out_file_name.c_str(), ofstream::out);
 
-	string scan_deriv_file_name = "scan_deriv.txt";
-	ofstream scan_deriv_file(scan_deriv_file_name.c_str(), ofstream::out);
+	string cylinder_file_name = "cylinder.txt";
+	ofstream cylinder_file(cylinder_file_name.c_str(), ofstream::out);
 	
 	float scanner_displacement = 30.0;
 	float ticks_to_mm          = 0.349;
@@ -55,32 +55,51 @@ int main(int argc, char const *argv[])
 
 	cout << "Scan derivative..." << endl;
 
-	int scan_no = 235;
-	vector<int> scan = robot.scan_data_.at(scan_no);
-
-	vector<float> jumps;
-	robot.compute_derivative(scan, jumps);
-	cout << "Jumps: " << endl;
-	for (int i = 0; i < jumps.size(); i++)
+	for (int ix = 0; ix < robot.scan_data_.size(); ix++)
 	{
-		scan_deriv_file << jumps.at(i) << " ";
-	}
-	scan_deriv_file << endl;
+			// int scan_no = 235;
+		vector<int> scan = robot.scan_data_.at(ix);
 
+		vector<float> jumps;
+		robot.compute_derivative(scan, jumps);
+		// cout << "Jumps: " << endl;
+		// for (int i = 0; i < jumps.size(); i++)
+		// {
+		// 	scan_deriv_file << jumps.at(i) << " ";
+		// }
+		// scan_deriv_file << endl;
 
-	vector<VectorXd> cylinder_list;
-	robot.find_cylinders(scan, jumps, cylinder_list);
-	for (int i = 0; i < cylinder_list.size(); i++)
-	{
-		cout << cylinder_list.at(i) << " ";
+		vector<VectorXd> cylinder_list;
+		robot.find_cylinders(scan, jumps, cylinder_list);
+		for (int i = 0; i < cylinder_list.size(); i++)
+		{
+			cout << cylinder_list.at(i) << " ";
+		}
+		cout << endl;
+
+		vector<VectorXd> cartesian_cylinders;
+		robot.compute_cartesian(cylinder_list, cartesian_cylinders);
+
+		cylinder_file << "D C ";
+		for (int i = 0; i < cartesian_cylinders.size(); i++)
+		{
+			VectorXd coords = VectorXd(2);
+			coords = cartesian_cylinders.at(i);
+			cylinder_file << coords(0) << " ";
+			cylinder_file << coords(1) << endl;
+		}
+
 	}
-	cout << endl;
 
 
   	cout << "Finished..." << endl;
 
   	if (out_file.is_open()) {
     	out_file.close();
+  	}
+
+  	if (cylinder_file.is_open()) {
+    	cylinder_file.close();
   	}
 
 	return 0;

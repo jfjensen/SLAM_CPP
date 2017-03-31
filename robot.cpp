@@ -28,6 +28,8 @@ Robot::Robot(float ticks_to_mm, float robot_width, float scanner_displacement)
 
 	min_dist_ = 20.0;
 	depth_jump_ = 100.0;
+	cylinder_offset_ = 90.0;
+	mounting_angle_ = -0.06981317007977318;
 }
 
 Robot::~Robot()
@@ -406,6 +408,32 @@ void Robot::find_cylinders(const vector<int> & scan, const vector<float> & scan_
 		}
 	}
 }
+
+float Robot::beam_index_to_angle(int ray_ix)
+{
+	return ((float)ray_ix - 330.0) * 0.006135923151543 + mounting_angle_;
+}
+
+
+void Robot::compute_cartesian(const vector<VectorXd> & cylinders, vector<VectorXd> & result)
+{
+	for (int i = 0; i < cylinders.size(); i++)
+	{
+		VectorXd c = VectorXd(2);
+		c  = cylinders.at(i);
+		int ray_ix = c(0);
+		float rng = c(1);
+		float ray_angle = beam_index_to_angle(ray_ix);
+		float x = cos(ray_angle) * (rng + cylinder_offset_);
+		float y = sin(ray_angle) * (rng + cylinder_offset_);
+
+		VectorXd coords = VectorXd(2);
+		coords << x, y;
+
+		result.push_back(coords);
+	}
+}
+
 
 int Robot::size()
 {
